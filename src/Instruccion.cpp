@@ -9,12 +9,12 @@ Instruccion::~Instruccion() {}
 void Instruccion::procesarEntrada()
 {
     std::istringstream iss(entrada);
-    iss >> direccion >> operacion;
+    iss >> direccionString >> operacion;
 }
 
-std::string Instruccion::getDireccion() const
+uint32_t Instruccion::getDireccion() const
 {
-    return direccion;
+    return std::stoul(direccionString, nullptr, 16);
 }
 
 char Instruccion::getOperacion() const
@@ -30,5 +30,11 @@ void Instruccion::setEntrada(const std::string &nuevaEntrada)
 
 void Instruccion::mostrar() const
 {
-    std::cout << "Direccion: " << direccion << ", Operacion: " << operacion << std::endl;
+    std::cout << "Direccion: " << direccionString << ", Operacion: " << operacion << std::endl;
+}
+
+uint32_t Instruccion::getPaginaId(uint32_t tam_paginas) const
+{
+    uint32_t idPagina = getDireccion() / tam_paginas;
+    return idPagina;
 }

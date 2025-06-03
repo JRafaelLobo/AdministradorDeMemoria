@@ -1,7 +1,7 @@
 #include "Proceso.hpp"
 
-Proceso::Proceso(std::string ruta, int numProceso, int promedioBytesPorLinea)
-    : ruta(ruta), numProceso(numProceso), promedioBytesPorLinea(promedioBytesPorLinea), archivo(std::make_unique<std::ifstream>(ruta)) {}
+Proceso::Proceso(std::string ruta, int idProceso, int promedioBytesPorLinea)
+    : ruta(ruta), idProceso(idProceso), promedioBytesPorLinea(promedioBytesPorLinea), archivo(std::make_unique<std::ifstream>(ruta)) {}
 
 bool Proceso::CalcularTamano()
 {
@@ -36,10 +36,11 @@ bool Proceso::cerrarArchivo()
 {
     if (!archivo || !archivo->is_open())
     {
-        archivo->close();
-        return true;
+        return false;
     }
-    return false;
+
+    archivo->close();
+    return true;
 }
 
 bool Proceso::leerLinea()
@@ -62,6 +63,22 @@ bool Proceso::estaAbierto()
 bool Proceso::finArchivo()
 {
     return archivo->eof();
+}
+
+int Proceso::getIdProceso() const
+{
+    return idProceso;
+}
+
+int Proceso::getInstruccionesRestantes() const
+{
+    int instruccionesRestantes = estimadoInstrucciones - instruccionesLeidas;
+    return instruccionesRestantes;
+}
+
+int Proceso::getEstimadoInstrucciones() const
+{
+    return estimadoInstrucciones;
 }
 
 std::string Proceso::getLinea() const

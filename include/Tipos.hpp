@@ -54,10 +54,9 @@ enum class Planificador
 {
     FCFS, // First Come First Serve
     SJF,  // Shortest Job First
-    SRTN, // Shortest Remaining Time First
+    SRTN, // Shortest Remaining Time Next
 };
 
-// Convierte el enum a string legible
 inline const char *toString(Planificador p)
 {
     switch (p)
@@ -73,7 +72,6 @@ inline const char *toString(Planificador p)
     }
 }
 
-// Convierte el enum a una descripción más detallada
 inline const char *descripcion(Planificador p)
 {
     switch (p)

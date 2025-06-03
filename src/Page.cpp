@@ -2,7 +2,7 @@
 
 Page::Page(int IdProceso, int IdPagina) : IdProceso(IdProceso), IdPagina(IdPagina)
 {
-    id = IdPagina + "-" + IdProceso;
+    id = std::to_string(IdProceso) + "-" + std::to_string(IdPagina);
 }
 
 Page::~Page() {}
