@@ -19,6 +19,7 @@ bool Proceso::CalcularTamano()
 
 bool Proceso::abrirArchivo()
 {
+    archivo = std::make_unique<std::ifstream>(ruta); 
     if (!archivo || !archivo->is_open())
     {
         std::cerr << "Error abriendo archivo " << ruta << std::endl;

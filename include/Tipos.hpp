@@ -7,7 +7,8 @@ enum class AlgoritmoDeReemplazo
 {
     FIFO, // First In First Out
     LRU,  // Least Recently Used
-    OPT   // Optimal
+    OPT,  // Optimal
+    CLOCK
 };
 
 inline const char *toString(AlgoritmoDeReemplazo alg)
@@ -20,6 +21,8 @@ inline const char *toString(AlgoritmoDeReemplazo alg)
         return "LRU";
     case AlgoritmoDeReemplazo::OPT:
         return "OPT";
+    case AlgoritmoDeReemplazo::CLOCK:
+        return "CLOCK";
     default:
         return "Desconocido";
     }
@@ -33,6 +36,8 @@ inline AlgoritmoDeReemplazo fromStringAlgoritmo(const std::string &s)
         return AlgoritmoDeReemplazo::LRU;
     if (s == "OPT")
         return AlgoritmoDeReemplazo::OPT;
+    if (s == "CLOCK")
+        return AlgoritmoDeReemplazo::CLOCK;
     throw std::invalid_argument("AlgoritmoDeReemplazo inválido: " + s);
 }
 
@@ -46,6 +51,8 @@ inline const char *descripcion(AlgoritmoDeReemplazo alg)
         return "Least Recently Used";
     case AlgoritmoDeReemplazo::OPT:
         return "Optimal";
+    case AlgoritmoDeReemplazo::CLOCK:
+        return "Aproximación a LRU";
     default:
         return "Descripción desconocida";
     }
