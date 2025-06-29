@@ -85,6 +85,18 @@ void AdminMemoria::ciclo()
     busquedaPagina();
 }
 
+bool AdminMemoria::setPlanificador(Planificador planificador)
+{
+    this->planificacion = planificador;
+    return true;
+}
+
+bool AdminMemoria::setAlgoritmo(AlgoritmoDeReemplazo algoritmo)
+{
+    this->algoritmoDeReemplazo = algoritmo;
+    return true;
+}
+
 void AdminMemoria::busquedaPagina()
 {
     if (numProcesoEjecutar == -1)
@@ -108,7 +120,6 @@ void AdminMemoria::busquedaPagina()
     {
         if (!p->leerLinea())
         {
-            std::cout << "NO HAY" << std::endl;
             procesos.erase(procesos.begin() + numProcesoEjecutar);
             ultimoProcesoEjecutado = -1;
             p->cerrarArchivo();
@@ -125,9 +136,11 @@ void AdminMemoria::busquedaPagina()
             std::cerr << "❌ Excepción atrapada: " << e.what() << " en ciclo " << i << std::endl;
             break;
         }
-
+        posActual++;
+        instruccionesLeidasTotal++;
         uint32_t idPagina = instruccion->getPaginaId(tam_paginas);
         std::string direccion = std::to_string(idproceso) + "-" + std::to_string(idPagina);
+
         if (memoriaPrincipal.find(direccion) != memoriaPrincipal.end())
         {
             if (algoritmoDeReemplazo == AlgoritmoDeReemplazo::LRU ||
@@ -141,6 +154,10 @@ void AdminMemoria::busquedaPagina()
                 if (algoritmoDeReemplazo == AlgoritmoDeReemplazo::CLOCK)
                 {
                     it->second.first->usada = true;
+                    if (instruccion->getOperacion() == 'W')
+                    {
+                        it->second.first->sucia = true;
+                    }
                 }
             }
             continue;
@@ -151,15 +168,12 @@ void AdminMemoria::busquedaPagina()
         auto it = almacenamientoExterno.find(direccion);
         if (it != almacenamientoExterno.end())
         {
-            // std::cout << "✅ Página encontrada en almacenamiento" << std::endl;
             paginaUsadaActualmente = it->second;
         }
         else
         {
-            // std::cout << "❌ Página NO encontrada en almacenamiento" << std::endl;
             paginaUsadaActualmente = std::make_shared<Page>(idproceso, idPagina);
             almacenamientoExterno[paginaUsadaActualmente->getId()] = paginaUsadaActualmente;
-            // std::cout << paginaUsadaActualmente->getId() << std::endl;
         }
 
         switch (algoritmoDeReemplazo)
@@ -180,7 +194,6 @@ void AdminMemoria::busquedaPagina()
             std::cout << "No hay un algoritmo seleccionado" << std::endl;
             break;
         }
-        posActual++;
     }
 }
 
@@ -250,7 +263,8 @@ void AdminMemoria::remplazoReloj()
 
             if (itReemplazo != memoriaPrincipal.end() && itReemplazo->second.first->sucia)
             {
-                std::cout << "Guardando página sucia: " << paginaReemplazada << std::endl;
+                itReemplazo->second.first->sucia = false;
+                // Guarda en memoria la pagina(Como se estan utilizando punteros en este proyecto no es necesario)
             }
 
             ordenPaginas.pop_front();
@@ -331,4 +345,20 @@ void AdminMemoria::remplazoOPT()
 int AdminMemoria::getPageFaults()
 {
     return NumPageFaults;
+}
+
+double AdminMemoria::getHitRate()
+{
+    for (size_t i = 0; i < procesos.size(); i++)
+    {
+        procesos.at(i)->getEstimadoInstrucciones();
+    }
+
+    return 1.0 - ((double)NumPageFaults / (double)instruccionesLeidasTotal);
+}
+
+double AdminMemoria::getEATS(int Tm, int Tf)
+{
+    double hitrate=getHitRate();
+    return hitrate*Tm+(1.0-hitrate)*(Tm+Tf);
 }
