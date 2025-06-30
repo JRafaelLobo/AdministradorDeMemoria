@@ -55,4 +55,5 @@ public:
     int getPageFaults();
     double getHitRate();
     double getEATS(int Tm,int Tf);
+    void mostrarMapaMemoria() const;
 };

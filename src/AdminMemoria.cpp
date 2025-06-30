@@ -362,3 +362,35 @@ double AdminMemoria::getEATS(int Tm, int Tf)
     double hitrate=getHitRate();
     return hitrate*Tm+(1.0-hitrate)*(Tm+Tf);
 }
+
+void AdminMemoria::mostrarMapaMemoria() const {
+    const int columnas = 10;
+    int count = 0;
+
+    std::cout << "\n===== MAPA DE MEMORIA =====\n";
+    for (const auto& par : memoriaPrincipal) {
+        const std::shared_ptr<Page>& page = par.second.first;
+
+        if (count % columnas == 0 && count > 0) {
+            std::cout << "\n";
+        }
+
+        if (!page) {
+            std::cout << ". "; 
+        } else if (page->sucia) {
+            std::cout << "S ";
+        } else {
+            std::cout << "C ";
+        }
+        count++;
+    }
+
+    for (; count < (int)frames; count++) {
+        if (count % columnas == 0 && count > 0) {
+            std::cout << "\n";
+        }
+        std::cout << ". ";
+    }
+
+    std::cout << "\n==========================\n";
+}
