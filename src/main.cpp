@@ -57,5 +57,6 @@ int main()
 {
     RealizarAnalisis("ArchivosParaTrabajar/bzip.trace");
     RealizarAnalisis("ArchivosParaTrabajar/gcc.trace");
+    //RealizarAnalisis("ArchivosParaTrabajar/Aleatorio.trace");
     return 0;
 }
